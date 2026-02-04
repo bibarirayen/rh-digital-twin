@@ -1,10 +1,14 @@
+
 from fastapi import FastAPI
 import pandas as pd
 import requests
-
 app = FastAPI(title="Digital Twin AI Engine")
 
 BACKEND_URL = "http://localhost:8080"
+
+@app.get("/")
+def root():
+    return {"message": "Welcome to Digital Twin AI Engine"}
 
 @app.get("/analyze")
 def analyze():
@@ -39,3 +43,4 @@ def analyze():
         })
 
     return results
+ 
