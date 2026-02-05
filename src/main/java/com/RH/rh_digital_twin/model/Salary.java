@@ -1,5 +1,6 @@
 package com.RH.rh_digital_twin.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -13,6 +14,7 @@ public class Salary {
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
+    @JsonIgnore
     private Employee employee;
 
     @Column(name = "salaire_base")
