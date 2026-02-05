@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 import pandas as pd
@@ -19,6 +18,16 @@ def analyze():
         employees = employees_response.json()
         salaries_response = requests.get("http://localhost:8080/salaries")
         salaries = salaries_response.json()
+        # Attach employeeId to salaries using employees data
+        salary_to_employee = {}
+
+        for emp in employees:
+            for sal in emp.get("salaries", []):
+                salary_to_employee[sal["id"]] = emp["id"]
+
+        for sal in salaries:
+            sal["employee"] = {"id": salary_to_employee.get(sal["id"])}
+
     except requests.exceptions.RequestException as e:
         return f"<h1>Error fetching data from API: {str(e)}</h1>"
 
@@ -104,20 +113,25 @@ def analyze():
     df_emp = pd.json_normalize(employees)
     df_sal = pd.json_normalize(salaries)
 
-    df = df_sal.merge(df_emp, left_on="employee.id", right_on="id")
-
+    df = df_sal.merge(df_emp, left_on="employee.id", right_on="id", how="left")
+    df["employee.department.id"] = df["role"]
+    df["employee.department.nom"] = df["role"]
     avg_salary = df.groupby("employee.department.id")["salaireBase"].mean()
 
     results = []
 
     for _, row in df.iterrows():
         emp_id = row["employee.id"]
-        emp_name = f"{row['employee.prenom']} {row['employee.nom']}"
-        dept_id = row["employee.department.id"]
-        dept_name = row["employee.department.nom"]
-        salary = row["salaireBase"]
-        avg = avg_salary[dept_id]
+        emp_name = f"{row['prenom']} {row['nom']}"
 
+        dept_id = row.get("employee.department.id")
+        if pd.isna(dept_id):
+            continue
+
+        dept_name = row.get("employee.department.nom", "N/A")
+        salary = row.get("salaireBase", 0)
+
+        avg = avg_salary[dept_id]
         diff = (salary - avg) / avg
 
         results.append({
@@ -131,9 +145,10 @@ def analyze():
             "reason": f"{int(diff*100)}% difference from department average"
         })
 
+
     summary = {"totalEmployees": len(results), "highRiskCount": sum(1 for r in results if r["risk"] == "HIGH")}
 
-    
+
     html = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -216,4 +231,3 @@ def analyze():
     """
 
     return html
- 
