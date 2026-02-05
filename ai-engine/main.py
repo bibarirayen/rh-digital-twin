@@ -4,6 +4,7 @@ from fastapi.responses import HTMLResponse
 import pandas as pd
 import json
 import os
+import requests
 app = FastAPI(title="Digital Twin AI Engine")
 
 @app.get("/")
@@ -12,14 +13,93 @@ def root():
 
 @app.get("/analyze", response_class=HTMLResponse)
 def analyze():
-   
-    with open("../sample_employees.json", "r") as f:
-        employees = json.load(f)
-    with open("../sample_salaries.json", "r") as f:
-        salaries = json.load(f)
 
-    if not employees or not salaries:
-        return "<h1>No data available</h1>"
+    try:
+        employees_response = requests.get("http://localhost:8080/employees")
+        employees = employees_response.json()
+        salaries_response = requests.get("http://localhost:8080/salaries")
+        salaries = salaries_response.json()
+    except requests.exceptions.RequestException as e:
+        return f"<h1>Error fetching data from API: {str(e)}</h1>"
+
+    if not employees:
+        return "<h1>No employees data available</h1>"
+
+    if not salaries:
+        # Show employees table without salary analysis
+        df_emp = pd.json_normalize(employees)
+        html = f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>RH Digital Twin AI Analysis</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+            <style>
+                body {{ background-color: #f8f9fa; }}
+                .container {{ margin-top: 50px; }}
+                .card {{ box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="text-center mb-4">RH Digital Twin AI Analysis</h1>
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5>Summary</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Total Employees:</strong> {len(df_emp)}</p>
+                                <p><strong>Note:</strong> No salary data available for analysis.</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Employee List</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Role</th>
+                                                <th>Department</th>
+                                                <th>Date Embauche</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+        """
+        for _, row in df_emp.iterrows():
+            dept_name = row.get("department.nom", "N/A") if pd.notna(row.get("department.nom")) else "N/A"
+            date_emb = str(row.get("dateEmbauche", "N/A")) if pd.notna(row.get("dateEmbauche")) else "N/A"
+            html += f"""
+                                            <tr>
+                                                <td>{int(row['id'])}</td>
+                                                <td>{row['prenom']} {row['nom']}</td>
+                                                <td>{row['role']}</td>
+                                                <td>{dept_name}</td>
+                                                <td>{date_emb}</td>
+                                            </tr>
+            """
+        html += """
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        </body>
+        </html>
+        """
+        return html
 
     df_emp = pd.json_normalize(employees)
     df_sal = pd.json_normalize(salaries)
