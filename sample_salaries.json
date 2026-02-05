@@ -1,0 +1,82 @@
+[
+  {
+    "employee": {
+      "id": 1,
+      "nom": "Doe",
+      "prenom": "John",
+      "role": "Developer",
+      "dateEmbauche": "2020-01-15",
+      "department": {
+        "id": 1,
+        "nom": "IT"
+      }
+    },
+    "salaireBase": 50000.0,
+    "prime": 5000.0,
+    "dateEffet": "2023-01-01"
+  },
+  {
+    "employee": {
+      "id": 2,
+      "nom": "Smith",
+      "prenom": "Jane",
+      "role": "Manager",
+      "dateEmbauche": "2019-03-10",
+      "department": {
+        "id": 1,
+        "nom": "IT"
+      }
+    },
+    "salaireBase": 70000.0,
+    "prime": 10000.0,
+    "dateEffet": "2023-01-01"
+  },
+  {
+    "employee": {
+      "id": 3,
+      "nom": "Johnson",
+      "prenom": "Bob",
+      "role": "Analyst",
+      "dateEmbauche": "2021-05-20",
+      "department": {
+        "id": 2,
+        "nom": "HR"
+      }
+    },
+    "salaireBase": 45000.0,
+    "prime": 3000.0,
+    "dateEffet": "2023-01-01"
+  },
+  {
+    "employee": {
+      "id": 4,
+      "nom": "Williams",
+      "prenom": "Alice",
+      "role": "Accountant",
+      "dateEmbauche": "2018-11-05",
+      "department": {
+        "id": 3,
+        "nom": "Finance"
+      }
+    },
+    "salaireBase": 55000.0,
+    "prime": 4000.0,
+    "dateEffet": "2023-01-01"
+  },
+  {
+    "employee": {
+      "id": 5,
+      "nom": "Brown",
+      "prenom": "Charlie",
+      "role": "Developer",
+      "dateEmbauche": "2022-07-12",
+      "department": {
+        "id": 1,
+        "nom": "IT"
+      }
+    },
+    "salaireBase": 48000.0,
+    "prime": 2000.0,
+    "dateEffet": "2023-01-01"
+  }
+]
