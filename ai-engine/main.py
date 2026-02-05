@@ -114,9 +114,9 @@ def analyze():
     df_sal = pd.json_normalize(salaries)
 
     df = df_sal.merge(df_emp, left_on="employee.id", right_on="id", how="left")
-    df["employee.department.id"] = df["role"]
-    df["employee.department.nom"] = df["role"]
-    avg_salary = df.groupby("employee.department.id")["salaireBase"].mean()
+
+
+    avg_salary = df.groupby("department.id")["salaireBase"].mean()
 
     results = []
 
@@ -124,11 +124,11 @@ def analyze():
         emp_id = row["employee.id"]
         emp_name = f"{row['prenom']} {row['nom']}"
 
-        dept_id = row.get("employee.department.id")
+        dept_id = row.get("department.id")
         if pd.isna(dept_id):
             continue
 
-        dept_name = row.get("employee.department.nom", "N/A")
+        dept_name = row.get("department.nom", "N/A")
         salary = row.get("salaireBase", 0)
 
         avg = avg_salary[dept_id]
@@ -142,8 +142,9 @@ def analyze():
             "departmentAverage": round(avg, 2),
             "risk": "HIGH" if abs(diff) > 0.2 else "NORMAL",
             "score": round(abs(diff), 2),
-            "reason": f"{int(diff*100)}% difference from department average"
+            "reason": f"{int(diff * 100)}% difference from department average"
         })
+
 
 
     summary = {"totalEmployees": len(results), "highRiskCount": sum(1 for r in results if r["risk"] == "HIGH")}

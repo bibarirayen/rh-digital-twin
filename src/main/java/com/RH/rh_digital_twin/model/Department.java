@@ -1,5 +1,6 @@
 package com.RH.rh_digital_twin.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
@@ -15,7 +16,7 @@ public class Department {
     private String nom;
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonBackReference
     private List<Employee> employees;
 
     // Getters and setters

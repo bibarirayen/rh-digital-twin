@@ -1,6 +1,7 @@
 package com.RH.rh_digital_twin.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -22,7 +23,7 @@ public class Employee {
 
     @ManyToOne
     @JoinColumn(name = "department_id")
-    @JsonBackReference
+    @JsonManagedReference
     private Department department;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
