@@ -1,43 +1,40 @@
 package com.RH.rh_digital_twin.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "compensation")
-public class Salary {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class SalaryDTO {
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "employee_id")
-    @JsonIgnore
-    private Employee employee;
-
-    @Column(name = "salaire_base")
+    private Long employeeId;
+    private String employeeName;
     private Integer salaireBase;
-
     private Integer prime;
-
-    @Column(name = "date_effet")
     private LocalDate dateEffet;
-    
-    @Column(name = "date_fin")
     private LocalDate dateFin;
-
-    @Column(name = "type_prime")
     private String typePrime;
-
     private Integer bonus;
-    // Getters and setters
+
+    public SalaryDTO() {}
+
+    public SalaryDTO(Long id, Long employeeId, String employeeName, Integer salaireBase, Integer prime, LocalDate dateEffet, LocalDate dateFin, String typePrime, Integer bonus) {
+        this.id = id;
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+        this.salaireBase = salaireBase;
+        this.prime = prime;
+        this.dateEffet = dateEffet;
+        this.dateFin = dateFin;
+        this.typePrime = typePrime;
+        this.bonus = bonus;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Employee getEmployee() { return employee; }
-    public void setEmployee(Employee employee) { this.employee = employee; }
+    public Long getEmployeeId() { return employeeId; }
+    public void setEmployeeId(Long employeeId) { this.employeeId = employeeId; }
+
+    public String getEmployeeName() { return employeeName; }
+    public void setEmployeeName(String employeeName) { this.employeeName = employeeName; }
 
     public Integer getSalaireBase() { return salaireBase; }
     public void setSalaireBase(Integer salaireBase) { this.salaireBase = salaireBase; }

@@ -1,40 +1,36 @@
 package com.RH.rh_digital_twin.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "timesheet")
-public class Timesheet {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class TimesheetDTO {
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "employee_id")
-    @JsonIgnore
-    private Employee employee;
-
+    private Long employeeId;
+    private String employeeName;
     private Integer mois;
-
     private Integer annee;
-
-    @Column(name = "heures_travaillees")
     private Integer heuresTravaillees;
-
-    @Column(name = "heures_sup")
     private Integer heuresSup;
-
-    @Column(name = "jours_absence")
     private Integer joursAbsence;
 
-    // Getters and setters
+    public TimesheetDTO() {}
+
+    public TimesheetDTO(Long id, Long employeeId, String employeeName, Integer mois, Integer annee, Integer heuresTravaillees, Integer heuresSup, Integer joursAbsence) {
+        this.id = id;
+        this.employeeId = employeeId;
+        this.employeeName = employeeName;
+        this.mois = mois;
+        this.annee = annee;
+        this.heuresTravaillees = heuresTravaillees;
+        this.heuresSup = heuresSup;
+        this.joursAbsence = joursAbsence;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Employee getEmployee() { return employee; }
-    public void setEmployee(Employee employee) { this.employee = employee; }
+    public Long getEmployeeId() { return employeeId; }
+    public void setEmployeeId(Long employeeId) { this.employeeId = employeeId; }
+
+    public String getEmployeeName() { return employeeName; }
+    public void setEmployeeName(String employeeName) { this.employeeName = employeeName; }
 
     public Integer getMois() { return mois; }
     public void setMois(Integer mois) { this.mois = mois; }
